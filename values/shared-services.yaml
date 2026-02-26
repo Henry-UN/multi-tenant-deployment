@@ -1,0 +1,27 @@
+# Shared services: Redis and Postgres used by standard-tier tenants
+namespace: shared-services
+tenantName: shared
+tier: shared
+
+redisHost: redis
+postgresHost: db
+
+deploy:
+  vote: false
+  result: false
+  worker: false
+  redis: true
+  postgres: true
+  networkPolicy: false
+  createNamespace: true
+
+redis:
+  replicas: 1
+  image: redis:alpine
+
+postgres:
+  replicas: 1
+  image: postgres:15-alpine
+
+postgresUser: postgres
+postgresPassword: postgres

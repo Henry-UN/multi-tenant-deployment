@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: tenants
+  namespace: argocd
+spec:
+  generators:
+    - matrix:
+        generators:
+          - git:
+              repoURL: 'https://github.com/Henry-UN/voting-app-kubernetes.git'
+              revision: HEAD
+              files:
+                - path: tenants/tenants.yaml
+                  pathExpression: $.tenants[*]
+  template:
+    metadata:
+      name: 'voting-app-tenant-{{name}}'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/Henry-UN/voting-app-kubernetes.git'
+        targetRevision: HEAD
+        path: .
+        helm:
+          valueFiles:
+            - 'values/{{valuesFile}}'
+          parameters:
+            - name: namespace
+              value: 'tenant-{{name}}'
+            - name: tenantName
+              value: '{{name}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: 'tenant-{{name}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true

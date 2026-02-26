@@ -1,0 +1,33 @@
+{{- if .Values.deploy.vote }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vote-deployment
+  namespace: {{ .Values.namespace | default "default" }}
+  labels:
+    app: voting-app
+    component: vote
+    tenant: {{ .Values.tenantName | default "shared" }}
+    tier: {{ .Values.tier | default "standard" }}
+spec:
+  replicas: {{ .Values.vote.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: voting-app
+      component: vote
+  template:
+    metadata:
+      labels:
+        app: voting-app
+        component: vote
+        tenant: {{ .Values.tenantName | default "shared" }}
+    spec:
+      containers:
+        - name: vote
+          image: {{ .Values.vote.image | default "kodekloud/examplevotingapp_vote:v1" }}
+          ports:
+            - containerPort: 80
+          env:
+            - name: REDIS_HOST
+              value: {{ .Values.redisHost | quote }}
+{{- end }}

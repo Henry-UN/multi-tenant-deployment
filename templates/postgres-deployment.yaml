@@ -1,0 +1,38 @@
+{{- if .Values.deploy.postgres }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+  namespace: {{ .Values.namespace | default "default" }}
+  labels:
+    app: voting-app
+    component: postgres
+    tenant: {{ .Values.tenantName | default "shared" }}
+spec:
+  replicas: {{ .Values.postgres.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: voting-app
+      component: postgres
+  template:
+    metadata:
+      labels:
+        app: voting-app
+        component: postgres
+        tenant: {{ .Values.tenantName | default "shared" }}
+    spec:
+      containers:
+        - name: postgres
+          image: {{ .Values.postgres.image | default "postgres:15-alpine" }}
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: {{ .Values.postgresUser | default "postgres" | quote }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.postgresPassword | default "postgres" | quote }}
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+            - name: POSTGRES_HOST_AUTH_METHOD
+              value: "trust"
+{{- end }}

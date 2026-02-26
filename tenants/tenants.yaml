@@ -1,0 +1,12 @@
+# Single source of truth for tenant definitions.
+# Add an entry here to onboard a new tenant; ArgoCD ApplicationSet will create one Application per tenant.
+tenants:
+  - name: hospital-001
+    tier: regulated
+    valuesFile: tenant-regulated.yaml
+  - name: hospital-002
+    tier: standard
+    valuesFile: tenant-standard.yaml
+  - name: hospital-003
+    tier: standard
+    valuesFile: tenant-standard.yaml

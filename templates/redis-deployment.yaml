@@ -1,0 +1,29 @@
+{{- if .Values.deploy.redis }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+  namespace: {{ .Values.namespace | default "default" }}
+  labels:
+    app: voting-app
+    component: redis
+    tenant: {{ .Values.tenantName | default "shared" }}
+spec:
+  replicas: {{ .Values.redis.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: voting-app
+      component: redis
+  template:
+    metadata:
+      labels:
+        app: voting-app
+        component: redis
+        tenant: {{ .Values.tenantName | default "shared" }}
+    spec:
+      containers:
+        - name: redis
+          image: {{ .Values.redis.image | default "redis:alpine" }}
+          ports:
+            - containerPort: 6379
+{{- end }}

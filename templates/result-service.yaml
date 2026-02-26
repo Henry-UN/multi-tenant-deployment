@@ -1,0 +1,20 @@
+{{- if .Values.deploy.result }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: result-service
+  namespace: {{ .Values.namespace | default "default" }}
+  labels:
+    app: voting-app
+    component: result
+    tenant: {{ .Values.tenantName | default "shared" }}
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+      name: http
+  selector:
+    app: voting-app
+    component: result
+{{- end }}

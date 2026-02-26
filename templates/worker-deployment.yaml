@@ -1,0 +1,37 @@
+{{- if .Values.deploy.worker }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+  namespace: {{ .Values.namespace | default "default" }}
+  labels:
+    app: voting-app
+    component: worker
+    tenant: {{ .Values.tenantName | default "shared" }}
+    tier: {{ .Values.tier | default "standard" }}
+spec:
+  replicas: {{ .Values.worker.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: voting-app
+      component: worker
+  template:
+    metadata:
+      labels:
+        app: voting-app
+        component: worker
+        tenant: {{ .Values.tenantName | default "shared" }}
+    spec:
+      containers:
+        - name: worker
+          image: {{ .Values.worker.image | default "kodekloud/examplevotingapp_worker:v1" }}
+          env:
+            - name: REDIS_HOST
+              value: {{ .Values.redisHost | quote }}
+            - name: PGHOST
+              value: {{ .Values.postgresHost | quote }}
+            - name: PGUSER
+              value: {{ .Values.postgresUser | default "postgres" | quote }}
+            - name: PGPASSWORD
+              value: {{ .Values.postgresPassword | default "postgres" | quote }}
+{{- end }}

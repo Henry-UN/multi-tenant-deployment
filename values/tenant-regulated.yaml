@@ -1,0 +1,39 @@
+# Regulated tier: isolated Redis and Postgres in tenant namespace
+tier: regulated
+redisMode: dedicated
+postgresMode: dedicated
+
+# Hosts are in same namespace (redis, db)
+redisHost: redis
+postgresHost: db
+
+deploy:
+  vote: true
+  result: true
+  worker: true
+  redis: true
+  postgres: true
+  networkPolicy: true
+
+vote:
+  replicas: 1
+  image: kodekloud/examplevotingapp_vote:v1
+
+result:
+  replicas: 1
+  image: kodekloud/examplevotingapp_result:v1
+
+worker:
+  replicas: 1
+  image: kodekloud/examplevotingapp_worker:v1
+
+redis:
+  replicas: 1
+  image: redis:alpine
+
+postgres:
+  replicas: 1
+  image: postgres:15-alpine
+
+postgresUser: postgres
+postgresPassword: postgres

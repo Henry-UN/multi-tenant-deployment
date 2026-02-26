@@ -1,0 +1,37 @@
+{{- if .Values.deploy.result }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: result-deployment
+  namespace: {{ .Values.namespace | default "default" }}
+  labels:
+    app: voting-app
+    component: result
+    tenant: {{ .Values.tenantName | default "shared" }}
+    tier: {{ .Values.tier | default "standard" }}
+spec:
+  replicas: {{ .Values.result.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: voting-app
+      component: result
+  template:
+    metadata:
+      labels:
+        app: voting-app
+        component: result
+        tenant: {{ .Values.tenantName | default "shared" }}
+    spec:
+      containers:
+        - name: result
+          image: {{ .Values.result.image | default "kodekloud/examplevotingapp_result:v1" }}
+          ports:
+            - containerPort: 80
+          env:
+            - name: PGHOST
+              value: {{ .Values.postgresHost | quote }}
+            - name: PGUSER
+              value: {{ .Values.postgresUser | default "postgres" | quote }}
+            - name: PGPASSWORD
+              value: {{ .Values.postgresPassword | default "postgres" | quote }}
+{{- end }}
