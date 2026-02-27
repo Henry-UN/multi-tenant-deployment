@@ -14,8 +14,8 @@ spec:
     spec:
       project: default
       source:
-        repoURL: 'https://github.com/Henry-UN/voting-app-kubernetes.git'
-        targetRevision: HEAD
+        repoURL: 'git@github.com:Henry-UN/multi-tenant-deployment.git'
+        targetRevision: main
         path: .
         helm:
           valueFiles:

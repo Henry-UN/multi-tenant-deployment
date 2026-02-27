@@ -1,0 +1,3 @@
+name: hospital-002
+tier: standard
+valuesFile: tenant-standard.yaml

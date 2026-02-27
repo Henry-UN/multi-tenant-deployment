@@ -4,35 +4,36 @@ metadata:
   name: tenants
   namespace: argocd
 spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
   generators:
-    - matrix:
-        generators:
-          - git:
-              repoURL: 'https://github.com/Henry-UN/voting-app-kubernetes.git'
-              revision: HEAD
-              files:
-                - path: tenants/tenants.yaml
-                  pathExpression: $.tenants[*]
+    - git:
+        repoURL: 'git@github.com:Henry-UN/multi-tenant-deployment.git'
+        revision: main
+        files:
+          - path: tenants/*.yaml
+          - path: tenants/tenants.yaml
+            exclude: true
   template:
     metadata:
-      name: 'voting-app-tenant-{{name}}'
+      name: 'voting-app-tenant-{{.name}}'
     spec:
       project: default
       source:
-        repoURL: 'https://github.com/Henry-UN/voting-app-kubernetes.git'
-        targetRevision: HEAD
+        repoURL: 'git@github.com:Henry-UN/multi-tenant-deployment.git'
+        targetRevision: main
         path: .
         helm:
           valueFiles:
-            - 'values/{{valuesFile}}'
+            - 'values/{{.valuesFile}}'
           parameters:
             - name: namespace
-              value: 'tenant-{{name}}'
+              value: 'tenant-{{.name}}'
             - name: tenantName
-              value: '{{name}}'
+              value: '{{.name}}'
       destination:
         server: https://kubernetes.default.svc
-        namespace: 'tenant-{{name}}'
+        namespace: 'tenant-{{.name}}'
       syncPolicy:
         automated:
           prune: true

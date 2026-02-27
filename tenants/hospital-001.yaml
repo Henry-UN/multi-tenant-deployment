@@ -1,0 +1,3 @@
+name: hospital-001
+tier: regulated
+valuesFile: tenant-regulated.yaml
