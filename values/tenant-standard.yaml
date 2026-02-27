@@ -3,7 +3,7 @@ tier: standard
 redisMode: shared
 postgresMode: shared
 
-# Hosts point to shared-services (overridden per-tenant by ArgoCD with namespace)
+# Hosts point to shared-services (overridden per-tenant by ArgoCD)
 redisHost: redis.shared-services.svc.cluster.local
 postgresHost: db.shared-services.svc.cluster.local
 
